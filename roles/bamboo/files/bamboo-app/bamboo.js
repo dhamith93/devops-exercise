@@ -1,7 +1,6 @@
 var http = require('http');
 var config = require('./config.json');
-var HttpDispatcher = require('httpdispatcher');
-var dispatcher = new HttpDispatcher();
+var dispatcher = require('httpdispatcher');
 
 function handleRequest(request, response){
     try {
