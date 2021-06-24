@@ -1,8 +1,8 @@
 ---
 - name: Install dependencies
   become: yes
-  apt: pkg={{item}} state=installed
-  with_items:
-    - nodejs
-    - npm
+  apt: 
+    pkg: ['nodejs', 'npm'] 
+    state: present
+    update_cache: yes
 
