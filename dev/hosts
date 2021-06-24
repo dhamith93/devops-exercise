@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 import subprocess
 import time
@@ -50,20 +50,20 @@ def find_in_parent_dirs(path):
 def get_ip(machine_id, provider):
     if provider == 'virtualbox':
         vminfo = subprocess.check_output('vboxmanage showvminfo %s' % machine_id, shell=True)
-        match = re.search('NIC ([0-9]+):.*Host-only Interface', vminfo)
+        match = re.search('NIC ([0-9]+):.*Host-only Interface', vminfo.decode('utf-8'))
         if match is None:
             raise RuntimeError("No host-only interface for %s" % machine_id)
 
         nic_id = int(match.groups()[0])
         prop_name = '/VirtualBox/GuestInfo/Net/%d/V4/IP' % (nic_id - 1)
         prop_value = subprocess.check_output('vboxmanage guestproperty get %s %s' % (machine_id, prop_name), shell=True)
-        match = re.match('Value: (.*)', prop_value)
+        match = re.match('Value: (.*)', prop_value.decode('utf-8'))
         if match is None:
             raise RuntimeError("No IP for NIC %d machine %s" % (nic_id, machine_id))
         return match.groups()[0]
 
     elif provider == 'lxc':
-        lxc_ls = subprocess.check_output('sudo lxc-ls --fancy --fancy-format name,state,ipv4 %s' % machine_id, shell=True).splitlines()
+        lxc_ls = subprocess.check_output('sudo lxc-ls --fancy --fancy-format name,state,ipv4 %s' % machine_id, shell=True).decode('utf-8').splitlines()
         vminfo = lxc_ls[-1].split()
         if len(vminfo) < 3:
             raise RuntimeError("Error parsing lxc-ls: no such machine %s" % machine_id)
@@ -83,7 +83,7 @@ def get_ip(machine_id, provider):
 status = subprocess.check_output('vagrant status', shell=True)
 inventory = Inventory()
 
-for name, provider in re.findall(host_provider_re, status):
+for name, provider in re.findall(host_provider_re, status.decode('utf-8')):
     match = re.match(host_to_group_re, name)
     if match is None:
         group = 'ungrouped'
@@ -96,7 +96,7 @@ for name, provider in re.findall(host_provider_re, status):
     if id_file is None:
         raise ValueError("Machine %s (%s) doesn't exist in .vagrant dir" % (name, provider))
 
-    machine_id = file(id_file).read()
+    machine_id = open(id_file).read()
     ssh_host = get_ip(machine_id, provider)
 
     key = find_in_parent_dirs('.vagrant/machines/%s/%s/private_key' % (name, provider))
@@ -108,4 +108,4 @@ for name, provider in re.findall(host_provider_re, status):
 
     inventory.add_hostvars(name, hostvars)
 
-print inventory.to_json()
+print(inventory.to_json())
