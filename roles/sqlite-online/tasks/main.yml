@@ -1,0 +1,15 @@
+---
+- name: copy app dir
+  copy: src=sqlite-online dest=/tmp/ owner=root group=root mode=0755
+
+- name: npm install
+  npm: path=/tmp/sqlite-online
+
+- name: Delete old pm2 process
+  command: pm2 delete /tmp/sqlite-online/app.js
+  ignore_errors: yes
+
+- name: Starting sqlite-online app
+  command: pm2 start /tmp/sqlite-online/app.js --name sqlite-online
+  args:
+    chdir: /tmp/sqlite-online/

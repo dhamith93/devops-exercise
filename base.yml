@@ -6,9 +6,21 @@
     - name: Set hostname
       hostname: name={{inventory_hostname}}
 
-- name: Base bamboo service
+- name: Handling nodejs
   hosts: base
   become: yes
   roles:
     - { role: nodejs, tags: nodejs }
+
+- name: SQLite-Online service
+  hosts: base
+  become: yes
+  roles:
+    - { role: sqlite-online, tags: sqlite-online }
+
+- name: Base bamboo service
+  hosts: base
+  become: yes
+  roles:
     - { role: bamboo, tags: bamboo }
+    
