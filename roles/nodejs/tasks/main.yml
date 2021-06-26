@@ -1,8 +1,32 @@
 ---
-- name: Install dependencies
+- name: Install GPG
+  apt:
+    pkg: gnupg
+    state: present
+
+- name: Import the NodeSource GPG key into apt
+  apt_key:
+    url: https://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0x1655A0AB68576280
+    id: "68576280"
+    state: present
+
+- name: Add NodeSource deb repository
+  apt_repository:
+    repo: 'deb https://deb.nodesource.com/node_16.x {{ ansible_distribution_release }} main'
+    state: present
+
+- name: Add NodeSource deb-src repository
+  apt_repository:
+    repo: 'deb-src https://deb.nodesource.com/node_16.x {{ ansible_distribution_release }} main'
+    state: present
+
+- name: Install nodejs
   become: yes
   apt: 
-    pkg: ['nodejs', 'npm'] 
+    pkg: 'nodejs' 
     state: present
     update_cache: yes
+
+- name: Install pm2 (to run Node.js app)
+  npm: name=pm2 global=yes state=present
 
