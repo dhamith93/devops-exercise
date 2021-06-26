@@ -17,10 +17,4 @@
   become: yes
   roles:
     - { role: sqlite-online, tags: sqlite-online }
-
-- name: Base bamboo service
-  hosts: base
-  become: yes
-  roles:
-    - { role: bamboo, tags: bamboo }
     
