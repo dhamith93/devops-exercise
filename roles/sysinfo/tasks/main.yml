@@ -1,0 +1,14 @@
+---
+- name: Copy sysinfo app dir
+  copy: src=sysinfo dest=/tmp/ owner=root group=root mode=0755
+
+- name: Kill sysinfo service
+  shell: pkill sysinfo
+
+- name: Run go build
+  command: /usr/local/go/bin/go build
+  args:
+    chdir: /tmp/sysinfo/
+
+- name: Start sysinfo service
+  shell: cd /tmp/sysinfo/; nohup ./sysinfo > /dev/null 2>&1 &
