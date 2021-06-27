@@ -12,9 +12,20 @@
   roles:
     - { role: nodejs, tags: nodejs }
 
+- name: Handling golang
+  hosts: base
+  become: yes
+  roles:
+    - { role: golang, tags: golang }
+
+- name: sysinfo service
+  hosts: base
+  become: yes
+  roles:
+    - { role: sysinfo, tags: sysinfo }
+
 - name: SQLite-Online service
   hosts: base
   become: yes
   roles:
     - { role: sqlite-online, tags: sqlite-online }
-    
