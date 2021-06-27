@@ -4,6 +4,7 @@
 
 - name: Kill sysinfo service
   shell: pkill sysinfo
+  ignore_errors: yes
 
 - name: Run go build
   command: /usr/local/go/bin/go build
